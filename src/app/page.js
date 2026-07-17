@@ -2,70 +2,56 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import BeeyondLogo from "../../components/BeeyondLogo";
-import HexButton from "../../components/HexButton";
+import Image from "next/image";
 
 export default function WelcomePage() {
   const router = useRouter();
 
   return (
     <main
-      className="bee-page"
-      style={{
-        background: "var(--bee-cream)",
-        justifyContent: "flex-start",
-        paddingTop: 48,
-        paddingBottom: 40,
-      }}
-    >
+        className="bee-page"
+        style={{
+          backgroundImage: "url('/images/background-welcome.webp')",
+          backgroundSize: "cover", // Agar gambar memenuhi layar
+          backgroundPosition: "center", // Agar gambar berada di tengah
+          backgroundRepeat: "no-repeat",
+          justifyContent: "flex-start",
+          paddingTop: 48,
+          paddingBottom: 40,
+          minHeight: "100vh", // Opsional: pastikan tinggi minimal seukuran layar
+        }}
+      >
       {/* blob kuning dekoratif di atas — ganti dengan asetmu kalau perlu */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 160,
-          background: "var(--bee-yellow-light)",
-          borderBottomLeftRadius: "50% 40px",
-          borderBottomRightRadius: "50% 40px",
-          zIndex: 0,
-        }}
-      />
-      {/* pola hexagon dekoratif di bawah — placeholder, ganti dengan image asset */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 220,
-          opacity: 0.25,
-          backgroundImage:
-            "radial-gradient(circle, var(--bee-yellow) 1px, transparent 1px)",
-          backgroundSize: "22px 22px",
-          zIndex: 0,
-        }}
-      />
 
-      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-        <BeeyondLogo />
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+          <Image 
+            src="/images/beeyond-logo.webp" 
+            alt="Beeyond Logo" 
+            width={220}  // Sesuaikan nilai ini dengan lebar asli/yang kamu inginkan
+            height={62}  // Sesuaikan nilai ini dengan tinggi asli/yang kamu inginkan
+            priority     // Tambahkan ini agar logo dimuat lebih awal (bagus untuk performa)
+            style={{
+              objectFit: "contain",
+              marginTop: "80px",
+          }}
+        />
 
         <h1
           style={{
-            fontFamily: "var(--font-heading)",
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
             fontWeight: 800,
-            fontSize: 28,
-            color: "var(--bee-yellow-dark)",
-            margin: "20px 0 4px",
+            fontSize: 32,
+            color: "#785900",
+            margin: "0px 0 4px",
           }}
         >
           Selamat Datang!
         </h1>
         <p
           style={{
-            color: "var(--bee-text-muted)",
-            fontSize: 14,
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            color: "#4F4632",
+            fontSize: 16,
             margin: "0 0 36px",
             textAlign: "center",
           }}
@@ -74,18 +60,51 @@ export default function WelcomePage() {
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 28, alignItems: "center" }}>
-          <HexButton
-            label="Murid"
-            variant="filled"
-            icon={<PlaceholderSmileIcon />}
+          {/* Tombol Murid */}
+          <button
             onClick={() => router.push("/login/murid")}
-          />
-          <HexButton
-            label="Guru"
-            variant="outline"
-            icon={<PlaceholderCapIcon />}
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              transition: "transform 0.1s ease", // Opsional: efek animasi kecil saat diklik
+            }}
+            onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
+            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          >
+            <Image
+              src="/images/murid-icon.svg"
+              alt="Login Murid"
+              width={220} // Sesuaikan dengan lebar gambarmu
+              height={220} // Sesuaikan dengan tinggi gambarmu
+              priority
+            />
+          </button>
+
+          {/* Tombol Guru */}
+          <button
             onClick={() => router.push("/login/guru")}
-          />
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              transition: "transform 0.1s ease", // Opsional: efek animasi kecil saat diklik
+            }}
+            onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
+            onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          >
+            <Image
+              src="/images/guru-icon.svg"
+              alt="Login Guru"
+              width={220} // Sesuaikan dengan lebar gambarmu
+              height={220} // Sesuaikan dengan tinggi gambarmu
+              priority
+            />
+          </button>
         </div>
       </div>
     </main>

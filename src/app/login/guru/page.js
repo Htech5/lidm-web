@@ -1,4 +1,4 @@
-// Buat file baru di: src/app/login/guru/page.js
+// Ganti file: src/app/login/guru/page.js
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -18,9 +18,14 @@ export default function LoginGuruPage() {
     <main
       className="bee-page"
       style={{
-        background: "linear-gradient(180deg, var(--bee-cream) 0%, var(--bee-yellow-light) 100%)",
+        // Ganti background gradient dengan gambar
+        backgroundImage: "url('/images/option-background.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         justifyContent: "center",
         padding: "24px 20px",
+        minHeight: "100vh", // Tambahkan ini agar background selalu penuh satu layar
       }}
     >
       <LoginForm role="guru" onSubmit={handleLogin} />

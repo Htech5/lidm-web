@@ -18,9 +18,14 @@ export default function LoginMuridPage() {
     <main
       className="bee-page"
       style={{
-        background: "linear-gradient(180deg, var(--bee-cream) 0%, var(--bee-yellow-light) 100%)",
+        // Ganti background gradient dengan gambar
+        backgroundImage: "url('/images/option-background.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         justifyContent: "center",
         padding: "24px 20px",
+        minHeight: "100vh", // Tambahkan ini agar background selalu penuh satu layar
       }}
     >
       <LoginForm role="murid" onSubmit={handleLogin} />

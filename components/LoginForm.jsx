@@ -1,8 +1,8 @@
-// Taruh di: components/LoginForm.jsx
+// Ganti file: components/LoginForm.jsx
 "use client";
 
 import { useState } from "react";
-import BeeyondLogo from "./BeeyondLogo";
+import Image from "next/image";
 
 /**
  * Form login yang dipakai bersama oleh halaman Login Murid & Login Guru.
@@ -40,11 +40,21 @@ export default function LoginForm({ role = "murid", onSubmit }) {
         alignItems: "center",
       }}
     >
-      {/* dua "tab" kuning di atas kartu, seperti di desain */}
-      <div style={{ position: "absolute", top: -14, left: 60, width: 22, height: 26, background: "var(--bee-yellow)", borderRadius: "0 0 10px 10px" }} />
-      <div style={{ position: "absolute", top: -14, right: 60, width: 22, height: 26, background: "var(--bee-yellow)", borderRadius: "0 0 10px 10px" }} />
-
-      <BeeyondLogo size="sm" />
+      {/* Dua "tab" honey drop di atas kartu menggantikan kotak kuning sebelumnya */}
+      <div style={{ position: "absolute", top: 0, left: 120 }}>
+        <Image src="/images/honey-drop.svg" alt="Honey Drop" width={40} height={36} />
+      </div>
+      <div style={{ position: "absolute", top: 0, right: 100 }}>
+        <Image src="/images/honey-drop2.svg" alt="Honey Drop 2" width={15} height={20} />
+      </div>
+      <Image
+        src="/images/beeyond-logo.webp"
+        alt="Beeyond Logo"
+        width={220} // Ukuran sedikit diperkecil dari halaman depan agar pas di form
+        height={62}
+        style={{ objectFit: "contain", marginTop: 12 }}
+        priority
+      />
 
       <h1
         style={{
@@ -60,7 +70,8 @@ export default function LoginForm({ role = "murid", onSubmit }) {
       </h1>
       <p
         style={{
-          color: "var(--bee-text-muted)",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          color: "#785900",
           fontSize: 14,
           margin: "0 0 24px",
           textAlign: "center",
@@ -72,7 +83,8 @@ export default function LoginForm({ role = "murid", onSubmit }) {
       <form onSubmit={handleSubmit} style={{ width: "100%" }}>
         <label style={fieldLabelStyle}>Akun Email</label>
         <div style={inputWrapStyle}>
-          <PlaceholderIcon />
+          {/* Ikon Email diganti dengan honey-drop2.svg */}
+          <Image src="/images/icon-account.svg" alt="Email Icon" width={20} height={20} />
           <input
             type="email"
             value={email}
@@ -85,7 +97,8 @@ export default function LoginForm({ role = "murid", onSubmit }) {
 
         <label style={{ ...fieldLabelStyle, marginTop: 18 }}>Kata Sandi</label>
         <div style={inputWrapStyle}>
-          <PlaceholderIconOutline />
+          {/* Ikon Password diganti dengan icon-pw.svg */}
+          <Image src="/images/icon-pw.svg" alt="Password Icon" width={20} height={20} />
           <input
             type={showPassword ? "text" : "password"}
             value={password}
@@ -100,7 +113,7 @@ export default function LoginForm({ role = "murid", onSubmit }) {
             style={eyeButtonStyle}
             aria-label="Tampilkan kata sandi"
           >
-            👁
+            {showPassword ? "🙈" : "👁"}
           </button>
         </div>
 
@@ -117,8 +130,32 @@ export default function LoginForm({ role = "murid", onSubmit }) {
           </a>
         </div>
 
-        <button type="submit" style={ctaButtonStyle}>
-          {ctaLabel}
+        {/* Tombol CTA diganti menggunakan gambar button-login.svg */}
+        <button
+          type="submit"
+          style={{
+            background: "transparent",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            marginTop: 4,
+            transition: "transform 0.1s ease",
+          }}
+          onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
+          onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        >
+          <Image
+            src="/images/button-login.svg"
+            alt={ctaLabel}
+            width={180}
+            height={80}
+            style={{ width: "100%", height: "auto" }}
+            priority
+          />
         </button>
       </form>
 
@@ -166,47 +203,6 @@ const eyeButtonStyle = {
   background: "transparent",
   fontSize: 16,
   padding: 0,
+  cursor: "pointer",
   opacity: 0.6,
 };
-
-const ctaButtonStyle = {
-  width: "100%",
-  border: "2px solid var(--bee-brown-dark)",
-  background: "var(--bee-yellow)",
-  color: "var(--bee-brown-dark)",
-  fontFamily: "var(--font-heading)",
-  fontWeight: 800,
-  fontSize: 17,
-  padding: "16px 0",
-  borderRadius: 999,
-  clipPath:
-    "polygon(4% 50%, 12% 0%, 88% 0%, 96% 50%, 88% 100%, 12% 100%)",
-  boxShadow: "0 5px 0 rgba(0,0,0,0.15)",
-  marginTop: 4,
-};
-
-/* Placeholder icons — ganti dengan aset asli kamu nanti */
-function PlaceholderIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="3" fill="var(--bee-yellow-dark)" />
-      <circle cx="7" cy="9" r="2.4" fill="var(--bee-yellow-dark)" />
-      <circle cx="17" cy="9" r="2.4" fill="var(--bee-yellow-dark)" />
-      <circle cx="7" cy="15" r="2.4" fill="var(--bee-yellow-dark)" />
-      <circle cx="17" cy="15" r="2.4" fill="var(--bee-yellow-dark)" />
-    </svg>
-  );
-}
-
-function PlaceholderIconOutline() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-      <polygon
-        points="12,2 21,7 21,17 12,22 3,17 3,7"
-        stroke="var(--bee-yellow-dark)"
-        strokeWidth="2"
-        fill="none"
-      />
-    </svg>
-  );
-}

@@ -1,6 +1,13 @@
-// Ganti file: src/app/layout.js
+// src/app/layout.js
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import MobileOnlyGuard from "../../components/MobileOnlyGuard";
+
+// Inisialisasi font
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"], // Subset standar
+  display: "swap",    // Mencegah flash teks kosong saat font dimuat
+});
 
 export const metadata = {
   title: "Beeyond",
@@ -10,7 +17,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="id">
-      <body>
+      {/* Tambahkan className dari font ke body */}
+      <body className={plusJakartaSans.className}>
         <MobileOnlyGuard maxWidth={480}>{children}</MobileOnlyGuard>
       </body>
     </html>
