@@ -1,34 +1,56 @@
-// Buat file baru di: src/app/login/murid/page.js
+// Ganti file: src/app/login/murid/page.js
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LoginForm from "../../../../components/LoginForm";
 
 export default function LoginMuridPage() {
   const router = useRouter();
+  // State untuk menyimpan pesan error dari API
+  const [errorMessage, setErrorMessage] = useState("");
 
-  function handleLogin({ email, password }) {
-    // TODO: sambungkan ke API/auth logic murid di sini
-    console.log("Login murid:", email, password);
-    // contoh redirect setelah sukses login:
-    // router.push("/murid/dashboard");
+  // Tambahkan 'name' dan 'mode' sesuai kiriman LoginForm
+  async function handleLogin({ name, email, password, mode }) {
+    setErrorMessage(""); // Bersihkan error setiap kali tombol ditekan
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, role: "murid", mode }), 
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Simpan pesan error ke state alih-alih memakai alert()
+        setErrorMessage(data.error || "Gagal memproses data");
+        return;
+      }
+
+      // Jika sukses, arahkan ke dashboard
+      router.push(data.redirect);
+    } catch (error) {
+      setErrorMessage("Terjadi kesalahan jaringan.");
+    }
   }
 
   return (
     <main
       className="bee-page"
       style={{
-        // Ganti background gradient dengan gambar
         backgroundImage: "url('/images/option-background.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         justifyContent: "center",
         padding: "24px 20px",
-        minHeight: "100vh", // Tambahkan ini agar background selalu penuh satu layar
+        minHeight: "100vh",
       }}
     >
-      <LoginForm role="murid" onSubmit={handleLogin} />
+      {/* Kirim pesan error sebagai prop 'errorMsg' ke komponen form */}
+      <LoginForm role="murid" onSubmit={handleLogin} errorMsg={errorMessage} />
     </main>
   );
 }

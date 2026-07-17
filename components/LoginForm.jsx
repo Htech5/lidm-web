@@ -5,24 +5,50 @@ import { useState } from "react";
 import Image from "next/image";
 
 /**
- * Form login yang dipakai bersama oleh halaman Login Murid & Login Guru.
- *
  * Props:
  * - role: "murid" | "guru"
- * - onSubmit: (data: {email, password}) => void
+ * - onSubmit: (data: {name?, email, password, mode}) => Promise<boolean>
+ * - errorMsg: String (pesan error dari API)
  */
-export default function LoginForm({ role = "murid", onSubmit }) {
+export default function LoginForm({ role = "murid", onSubmit, errorMsg }) {
+  const [isLoginMode, setIsLoginMode] = useState(true);
+
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const isMurid = role === "murid";
-  const title = isMurid ? "Login Murid" : "Login Guru";
+  const title = isLoginMode
+    ? (isMurid ? "Login Murid" : "Login Guru")
+    : (isMurid ? "Daftar Murid" : "Daftar Guru");
+
   const ctaLabel = isMurid ? "Ayo main! 🚀" : "Ayo ajar! 🚀";
 
-  function handleSubmit(e) {
+  // BERUBAH: Fungsi ini sekarang async
+  async function handleSubmit(e) {
     e.preventDefault();
-    onSubmit?.({ email, password });
+    if (isLoginMode) {
+      // Jika mode login, jalankan biasa
+      await onSubmit?.({ email, password, mode: "login" });
+    } else {
+      // Jika mode register, tangkap hasilnya
+      const isSuccess = await onSubmit?.({ name, email, password, mode: "register" });
+      
+      // Jika berhasil, munculkan alert, dan saat OK diklik, jalankan toggleMode()
+      if (isSuccess) {
+        alert("Pendaftaran berhasil! Tekan OK untuk masuk menggunakan akun baru Anda.");
+        toggleMode();
+      }
+    }
+  }
+
+  function toggleMode() {
+    setIsLoginMode(!isLoginMode);
+    // Bersihkan field saat berpindah form
+    setName("");
+    setEmail("");
+    setPassword("");
   }
 
   return (
@@ -40,17 +66,17 @@ export default function LoginForm({ role = "murid", onSubmit }) {
         alignItems: "center",
       }}
     >
-      {/* Dua "tab" honey drop di atas kartu menggantikan kotak kuning sebelumnya */}
       <div style={{ position: "absolute", top: 0, left: 120 }}>
         <Image src="/images/honey-drop.svg" alt="Honey Drop" width={40} height={36} />
       </div>
       <div style={{ position: "absolute", top: 0, right: 100 }}>
         <Image src="/images/honey-drop2.svg" alt="Honey Drop 2" width={15} height={20} />
       </div>
+
       <Image
         src="/images/beeyond-logo.webp"
         alt="Beeyond Logo"
-        width={220} // Ukuran sedikit diperkecil dari halaman depan agar pas di form
+        width={220}
         height={62}
         style={{ objectFit: "contain", marginTop: 12 }}
         priority
@@ -81,9 +107,27 @@ export default function LoginForm({ role = "murid", onSubmit }) {
       </p>
 
       <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-        <label style={fieldLabelStyle}>Akun Email</label>
+        {!isLoginMode && (
+          <>
+            <label style={fieldLabelStyle}>Nama Lengkap</label>
+            <div style={inputWrapStyle}>
+              <Image src="/images/icon-account.svg" alt="Name Icon" width={20} height={20} />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nama kamu"
+                required
+                style={inputStyle}
+              />
+            </div>
+          </>
+        )}
+
+        <label style={{ ...fieldLabelStyle, marginTop: !isLoginMode ? 18 : 0 }}>
+          Akun Email
+        </label>
         <div style={inputWrapStyle}>
-          {/* Ikon Email diganti dengan honey-drop2.svg */}
           <Image src="/images/icon-account.svg" alt="Email Icon" width={20} height={20} />
           <input
             type="email"
@@ -96,8 +140,12 @@ export default function LoginForm({ role = "murid", onSubmit }) {
         </div>
 
         <label style={{ ...fieldLabelStyle, marginTop: 18 }}>Kata Sandi</label>
-        <div style={inputWrapStyle}>
-          {/* Ikon Password diganti dengan icon-pw.svg */}
+        <div
+          style={{
+            ...inputWrapStyle,
+            border: errorMsg ? "1px solid #E02D2D" : "1px solid var(--bee-border)",
+          }}
+        >
           <Image src="/images/icon-pw.svg" alt="Password Icon" width={20} height={20} />
           <input
             type={showPassword ? "text" : "password"}
@@ -117,22 +165,40 @@ export default function LoginForm({ role = "murid", onSubmit }) {
           </button>
         </div>
 
-        <div style={{ textAlign: "center", margin: "10px 0 22px" }}>
-          <a
-            href="#"
+        {errorMsg && (
+          <p
             style={{
-              color: "var(--bee-yellow-dark)",
-              fontWeight: 700,
-              fontSize: 13,
+              color: "#E02D2D",
+              fontSize: 12,
+              fontWeight: 600,
+              marginTop: 6,
+              marginBottom: 0,
+              textAlign: "left",
             }}
           >
-            Lupa kata sandi?
-          </a>
-        </div>
+            * {errorMsg}
+          </p>
+        )}
 
-        {/* Tombol CTA diganti menggunakan gambar button-login.svg */}
+        {isLoginMode ? (
+          <div style={{ textAlign: "center", margin: "10px 0 22px" }}>
+            <a
+              href="#"
+              style={{
+                color: "var(--bee-yellow-dark)",
+                fontWeight: 700,
+                fontSize: 13,
+              }}
+            >
+              Lupa kata sandi?
+            </a>
+          </div>
+        ) : (
+          <div style={{ marginBottom: 32 }} />
+        )}
+
         <button
-          type="submit"
+          type="submit" // Pastikan type-nya "submit"
           style={{
             background: "transparent",
             border: "none",
@@ -149,7 +215,7 @@ export default function LoginForm({ role = "murid", onSubmit }) {
           onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         >
           <Image
-            src="/images/button-login.svg"
+            src={isLoginMode ? "/images/button-login.svg" : "/images/button-regis.svg"}
             alt={ctaLabel}
             width={180}
             height={80}
@@ -160,49 +226,30 @@ export default function LoginForm({ role = "murid", onSubmit }) {
       </form>
 
       <p style={{ marginTop: 22, fontSize: 13, color: "var(--bee-text-muted)" }}>
-        Belum punya akun?{" "}
-        <a href="#" style={{ color: "var(--bee-yellow-dark)", fontWeight: 700 }}>
-          Daftar sekarang!
-        </a>
+        {isLoginMode ? "Belum punya akun? " : "Sudah punya akun? "}
+        <button
+          type="button"
+          onClick={toggleMode}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            color: "var(--bee-yellow-dark)",
+            fontWeight: 700,
+            cursor: "pointer",
+            fontSize: 13,
+            fontFamily: "inherit",
+          }}
+        >
+          {isLoginMode ? "Daftar sekarang!" : "Masuk di sini!"}
+        </button>
       </p>
     </div>
   );
 }
 
 /* ---------- styles ---------- */
-
-const fieldLabelStyle = {
-  display: "block",
-  fontSize: 13,
-  fontWeight: 600,
-  color: "var(--bee-brown-dark)",
-  marginBottom: 6,
-};
-
-const inputWrapStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  background: "var(--bee-cream-dark)",
-  border: "1px solid var(--bee-border)",
-  borderRadius: 999,
-  padding: "12px 18px",
-};
-
-const inputStyle = {
-  border: "none",
-  background: "transparent",
-  outline: "none",
-  flex: 1,
-  fontSize: 14,
-  color: "var(--bee-brown-dark)",
-};
-
-const eyeButtonStyle = {
-  border: "none",
-  background: "transparent",
-  fontSize: 16,
-  padding: 0,
-  cursor: "pointer",
-  opacity: 0.6,
-};
+const fieldLabelStyle = { display: "block", fontSize: 13, fontWeight: 600, color: "var(--bee-brown-dark)", marginBottom: 6 };
+const inputWrapStyle = { display: "flex", alignItems: "center", gap: 10, background: "var(--bee-cream-dark)", border: "1px solid var(--bee-border)", borderRadius: 999, padding: "12px 18px" };
+const inputStyle = { border: "none", background: "transparent", outline: "none", flex: 1, fontSize: 14, color: "var(--bee-brown-dark)" };
+const eyeButtonStyle = { border: "none", background: "transparent", fontSize: 16, padding: 0, cursor: "pointer", opacity: 0.6 };
