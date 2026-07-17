@@ -9,21 +9,25 @@ const navItems = [
   { id: "buku", path: "/dashboard/murid/buku", icon: "/images/Book.svg" },
 ];
 
-export default function BottomNavBar() {
+export default function BottomNavBar({ transparent = false }) {
   const router = useRouter();
   const pathname = usePathname();
 
   return (
     <nav
       style={{
-        background: "linear-gradient(#FFF, #FFF) padding-box, linear-gradient(90deg, #FFD700, #FFF3B0, #FFD700) border-box",
-        border: "2px solid transparent",
+        background: transparent
+          ? "rgba(0,0,0,0.7)"
+          : "linear-gradient(#FFF, #FFF) padding-box, linear-gradient(90deg, #FFD700, #FFF3B0, #FFD700) border-box",
+        border: transparent ? "none" : "2px solid transparent",
         borderBottom: "none",
         borderRadius: "30px 30px 0 0",
         padding: "15px",
         display: "flex",
         justifyContent: "space-around",
-        boxShadow: "0 -4px 12px rgba(0,0,0,0.05)",
+        boxShadow: transparent ? "none" : "0 -4px 12px rgba(0,0,0,0.05)",
+        backdropFilter: transparent ? "blur(6px)" : "none",
+        WebkitBackdropFilter: transparent ? "blur(6px)" : "none",
       }}
     >
       {navItems.map((item) => (
@@ -32,7 +36,12 @@ export default function BottomNavBar() {
           onClick={() => router.push(item.path)}
           style={{
             border: "none",
-            background: pathname === item.path ? "#FFD700" : "transparent",
+            background:
+              pathname === item.path
+                ? "#FFD700"
+                : transparent
+                ? "rgba(255,255,255,0.15)"
+                : "transparent",
             padding: "10px",
             borderRadius: "10px",
             width: 50,
