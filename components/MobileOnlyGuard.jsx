@@ -1,5 +1,6 @@
     // Taruh di: components/MobileOnlyGuard.jsx
 "use client";
+import Image from "next/image";
 
 import { useEffect, useState } from "react";
 
@@ -52,7 +53,12 @@ export default function MobileOnlyGuard({ children, maxWidth = 480 }) {
           gap: 16,
         }}
       >
-        <div style={{ fontSize: 56 }}>📱</div>
+        <Image 
+          src="/images/avatar.svg" 
+          alt="Phone Icon" 
+          width={56} 
+          height={56} 
+        />
         <h1
           style={{
             fontFamily: "var(--font-heading)",
